@@ -1,0 +1,46 @@
+modules = ["nodejs-20", "nix", "postgresql-16"]
+run = "npm install && npm run start"
+
+[nix]
+channel = "stable-25_05"
+
+[deployment]
+run = ["sh", "-c", "npm run start"]
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[agent]
+expertMode = true
+
+[userenv]
+
+[userenv.shared]
+SESSION_ID = "GlobalTechInfo/Infinity-MD_faa7441fbd9da8c7d00fdbb4a96457d3"
+POSTGRES_URL = "postgres://infinity:Savin123@db-inf-61mid-postgresql.db-inf-61mid.svc.cluster.local:5432/bot"
+PAIRING_NUMBER = "94778507806"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Infinity MD Bot"
+
+[[workflows.workflow]]
+name = "Infinity MD Bot"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm start"
+waitForPort = 5000
+
+[workflows.workflow.metadata]
+outputType = "webview"
