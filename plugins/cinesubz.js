@@ -3,7 +3,7 @@ const store = require('../lib/lightweight_store');
 
 module.exports = {
   command: 'cinesubz',
-  aliases: [],
+  aliases: ['cinesub'],
   category: 'movies',
   description: 'Search Cinesubz and get download links',
   usage: '.cinesubz <movie name>',

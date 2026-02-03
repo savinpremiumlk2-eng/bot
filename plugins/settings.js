@@ -4,7 +4,7 @@ const { cleanJid } = require('../lib/isOwner');
 
 module.exports = {
     command: 'settings',
-    aliases: ['config', 'setting'],
+    aliases: ['config', 'setting', 'ssettings'],
     category: 'owner',
     description: 'Show bot settings and per-group configurations',
     usage: '.settings',
