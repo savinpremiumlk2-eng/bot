@@ -12,7 +12,7 @@ const settings = {
   tempCleanupInterval: 1 * 60 * 60 * 1000,
   storeWriteInterval: 10000,
   description: "Infinity MD Bot - Powered by AI",
-  version: "5.1.0",
+  version: "1.0.1",
   updateZipUrl: "https://github.com/GlobalTechInfo/Infinity-MD/archive/refs/heads/main.zip",
   channelLink: "",
   ytch: "GlobalTechInfo"

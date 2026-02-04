@@ -58,20 +58,24 @@ module.exports = {
     const botName = settings.botName || 'Infinity MD';
     const version = settings.version || 'unknown';
 
+    // Improved .ping design with emoji, color, and clear formatting
     const lines = [];
-    lines.push('╭─〔 ⚡ INFINITY MD — STATUS 〕─╮');
-    lines.push(`│ 💠 ${botName} — v${version}`);
-    lines.push('│');
-    lines.push(`│ 🏓 RTT        : ${latencyMs.toFixed(2)} ms`);
-    lines.push(`│ ⏱ Uptime     : ${days}d ${hours}h ${mins}m ${secs}s`);
-    lines.push(`│ 💾 RSS        : ${rssMB.toFixed(1)} MB`);
-    lines.push(`│ 📦 Heap       : ${heapUsedMB.toFixed(1)} / ${heapTotalMB.toFixed(1)} MB`);
-    lines.push(`│ 🧮 Load(1m)   : ${load1}    │ CPU Cores: ${cpuCount}`);
-    lines.push(`│ 🖥 Platform   : ${platform}`);
-    lines.push(`│ ⚙️ CPU Model  : ${cpuModel}`);
-    lines.push('│');
-    lines.push('│ ✨ Stay awesome — Infinity MD ✨');
-    lines.push('╰──────────────────────────────╯');
+    lines.push('┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓');
+    lines.push('┃ ⚡ 𝙄𝙉𝙁𝙄𝙉𝙄𝙏𝙔 𝙈𝘿 — 𝙋𝙄𝙉𝙂 𝙎𝙏𝘼𝙏𝙐𝙎 ⚡ ┃');
+    lines.push('┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫');
+    lines.push(`┃ 🤖 *Bot:* ${botName}`);
+    lines.push(`┃ 🏷️ *Version:* v${version}`);
+    lines.push('┃');
+    lines.push(`┃ 🏓 *Ping:* ${latencyMs >= 0 ? latencyMs.toFixed(2) : 'N/A'} ms`);
+    lines.push(`┃ ⏱️ *Uptime:* ${days}d ${hours}h ${mins}m ${secs}s`);
+    lines.push(`┃ 💾 *RAM:* ${rssMB.toFixed(1)} MB`);
+    lines.push(`┃ 📦 *Heap:* ${heapUsedMB.toFixed(1)} / ${heapTotalMB.toFixed(1)} MB`);
+    lines.push(`┃ 🧮 *Load(1m):* ${load1}   | *CPU:* ${cpuCount}`);
+    lines.push(`┃ 🖥️ *Platform:* ${platform}`);
+    lines.push(`┃ ⚙️ *CPU Model:* ${cpuModel}`);
+    lines.push('┃');
+    lines.push('┃ ✨ _Stay awesome — Infinity MD_ ✨');
+    lines.push('┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛');
 
     const caption = lines.join('\n');
 
