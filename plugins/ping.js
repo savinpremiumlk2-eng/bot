@@ -1,5 +1,20 @@
 const settings = require('../settings');
 const os = require('os');
+const dns = require('dns');
+const fs = require('fs');
+const path = require('path');
+
+function pickRandomAsset() {
+  const assetsDir = path.join(__dirname, '../assets');
+  try {
+    const files = fs.readdirSync(assetsDir).filter(f => /\.(jpe?g|png|webp)$/i.test(f));
+    if (!files || files.length === 0) return null;
+    const choice = files[Math.floor(Math.random() * files.length)];
+    return path.join(assetsDir, choice);
+  } catch (e) {
+    return null;
+  }
+}
 
 module.exports = {
   command: 'ping',
@@ -11,12 +26,17 @@ module.exports = {
 
   async handler(sock, message, args) {
     const chatId = message.key.remoteJid;
-    const start = process.hrtime.bigint();
 
-    // send an initial placeholder and measure precise RTT
-    const placeholder = await sock.sendMessage(chatId, { text: '⏳ Calculating ping and system stats...' });
-    const end = process.hrtime.bigint();
-    const latencyMs = Number(end - start) / 1e6;
+    // Measure a small network operation (DNS lookup) for a realistic ping
+    let latencyMs = 0;
+    try {
+      const t0 = process.hrtime.bigint();
+      await dns.promises.lookup('google.com');
+      const t1 = process.hrtime.bigint();
+      latencyMs = Number(t1 - t0) / 1e6;
+    } catch (e) {
+      latencyMs = -1;
+    }
 
     const uptimeSec = Math.floor(process.uptime());
     const days = Math.floor(uptimeSec / 86400);
@@ -55,18 +75,16 @@ module.exports = {
 
     const caption = lines.join('\n');
 
-    // send the final formatted status (quote the placeholder for neatness)
+    // Prefer to use the same banner as the menu (bot_image.jpg) if available
     try {
-      const fs = require('fs');
-      const path = require('path');
-      const imgPath = path.join(__dirname, '../assets/stickintro.webp');
-      if (fs.existsSync(imgPath)) {
-        await sock.sendMessage(chatId, { image: fs.readFileSync(imgPath), caption }, { quoted: placeholder });
+      const imgPath = pickRandomAsset();
+      if (imgPath && fs.existsSync(imgPath)) {
+        await sock.sendMessage(chatId, { image: fs.readFileSync(imgPath), caption }, { quoted: message });
       } else {
-        await sock.sendMessage(chatId, { text: caption }, { quoted: placeholder });
+        await sock.sendMessage(chatId, { text: caption }, { quoted: message });
       }
     } catch (e) {
-      await sock.sendMessage(chatId, { text: caption }, { quoted: placeholder });
+      await sock.sendMessage(chatId, { text: caption }, { quoted: message });
     }
   }
 };

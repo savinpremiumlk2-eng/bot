@@ -4,6 +4,18 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 
+function pickRandomAsset() {
+  const assetsDir = path.join(__dirname, '../assets');
+  try {
+    const files = fs.readdirSync(assetsDir).filter(f => /\.(jpe?g|png|webp)$/i.test(f));
+    if (!files || files.length === 0) return null;
+    const choice = files[Math.floor(Math.random() * files.length)];
+    return path.join(assetsDir, choice);
+  } catch (e) {
+    return null;
+  }
+}
+
 function formatUptime() {
     let uptime = Math.floor(process.uptime());
     const days = Math.floor(uptime / 86400);
@@ -42,8 +54,8 @@ module.exports = {
     const chatId = context.chatId || message.key.remoteJid;
 
     try {
-      const imagePath = path.join(__dirname, '../assets/bot_image.jpg');
-      const thumbnail = fs.existsSync(imagePath) ? fs.readFileSync(imagePath) : null;
+      const imagePath = pickRandomAsset();
+      const thumbnail = imagePath && fs.existsSync(imagePath) ? fs.readFileSync(imagePath) : null;
 
       const commandCount = CommandHandler.commands.size;
       const prefix = settings.prefixes ? settings.prefixes[0] : '.';

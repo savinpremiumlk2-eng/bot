@@ -1,5 +1,18 @@
 const settings = require("../settings");
 const fs = require('fs');
+const path = require('path');
+
+function pickRandomAsset() {
+  const assetsDir = path.join(__dirname, '../assets');
+  try {
+    const files = fs.readdirSync(assetsDir).filter(f => /\.(jpe?g|png|webp)$/i.test(f));
+    if (!files || files.length === 0) return null;
+    const choice = files[Math.floor(Math.random() * files.length)];
+    return path.join(assetsDir, choice);
+  } catch (e) {
+    return null;
+  }
+}
 
 module.exports = {
   command: 'ownermenu',
@@ -11,7 +24,7 @@ module.exports = {
   async handler(sock, message, args, context = {}) {
     const chatId = context.chatId || message.key.remoteJid;
     const prefix = settings.prefixes ? settings.prefixes[0] : '.';
-    const banner = './assets/unnamed_(1)_1769953514810.jpg';
+    const banner = pickRandomAsset() || path.join(__dirname, '../assets/unnamed_(1)_1769953514810.jpg');
 
     const menuText = `╭───〔 👑 OWNER MENU 〕───
 │
@@ -49,9 +62,14 @@ module.exports = {
 
 > 💫 *INFINITY MD BOT* - Powered by AI`;
 
-    await sock.sendMessage(chatId, { 
-      image: fs.readFileSync(banner),
-      caption: menuText 
-    }, { quoted: message });
+    try {
+      const img = fs.existsSync(banner) ? fs.readFileSync(banner) : null;
+      if (img) {
+        await sock.sendMessage(chatId, { image: img, caption: menuText }, { quoted: message });
+        return;
+      }
+    } catch (e) {}
+
+    await sock.sendMessage(chatId, { text: menuText }, { quoted: message });
   }
 };
