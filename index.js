@@ -405,22 +405,19 @@ async function startQasimDev() {
                 printLog('info', `Using default phone number: ${phoneNumberInput}`);
             }
 
-            phoneNumberInput = phoneNumberInput.replace(/[^0-9]/g, '');
-
-            const pn = require('awesome-phonenumber');
-            if (!pn('+' + phoneNumberInput).isValid()) {
+            const helper = require('./lib/baileys_helper');
+            try {
+                phoneNumberInput = helper.normalizeNumber(phoneNumberInput);
+            } catch (err) {
                 printLog('error', 'Invalid phone number format');
-                
-                if (rl && !rl.closed) {
-                    rl.close();
-                }
+                if (rl && !rl.closed) rl.close();
                 process.exit(1);
             }
 
             setTimeout(async () => {
                 try {
                     let code = await QasimDev.requestPairingCode(phoneNumberInput);
-                    code = code?.match(/.{1,4}/g)?.join("-") || code;
+                    code = code || '';
                     console.log(chalk.black(chalk.bgGreen(`Your Pairing Code : `)), chalk.black(chalk.white(code)));
                     printLog('success', `Pairing code generated: ${code}`);
                     

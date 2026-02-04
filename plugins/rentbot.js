@@ -132,26 +132,25 @@ module.exports = {
             });
 
             if (!conn.authState.creds.registered) {
-                await new Promise(resolve => setTimeout(resolve, 6000));
+                    await new Promise(resolve => setTimeout(resolve, 6000));
 
-                try {
-                    let code = await conn.requestPairingCode(userNumber);
-                    code = code?.match(/.{1,4}/g)?.join("-") || code;
-                    
-                    const pairingText = `*Infinity MD CLONE SYSTEM*\n\n` +
-                                       `Code: *${code}*\n` +
-                                       `Storage: *${HAS_DB ? 'Database' : 'File System'}*\n\n` +
-                                       `1. Open WhatsApp Settings\n` +
-                                       `2. Tap Linked Devices > Link with Phone Number\n` +
-                                       `3. Enter the code above.\n\n` +
-                                       `*Tip:* If no popup appears, go to 'Link with phone number' on your phone and enter the code manually.`;
-                    
-                    await sock.sendMessage(chatId, { text: pairingText }, { quoted: message });
-                } catch (err) {
-                    console.error("Pairing Error:", err);
-                    await sock.sendMessage(chatId, { text: "❌ Failed to request code. Try again in 1 minute." });
+                    try {
+                        const helper = require('../lib/baileys_helper');
+                        const code = await helper.requestPairingCode(conn, userNumber);
+                        const pairingText = `*Infinity MD CLONE SYSTEM*\n\n` +
+                                           `Code: *${code}*\n` +
+                                           `Storage: *${HAS_DB ? 'Database' : 'File System'}*\n\n` +
+                                           `1. Open WhatsApp Settings\n` +
+                                           `2. Tap Linked Devices > Link with Phone Number\n` +
+                                           `3. Enter the code above.\n\n` +
+                                           `*Tip:* If no popup appears, go to 'Link with phone number' on your phone and enter the code manually.`;
+
+                        await sock.sendMessage(chatId, { text: pairingText }, { quoted: message });
+                    } catch (err) {
+                        console.error("Pairing Error:", err);
+                        await sock.sendMessage(chatId, { text: "❌ Failed to request code. Try again in 1 minute." });
+                    }
                 }
-            }
 
             conn.ev.on('creds.update', async () => {
                 await saveCreds();

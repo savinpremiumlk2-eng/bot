@@ -2,6 +2,9 @@ import express from 'express';
 import fs from 'fs-extra';
 import pino from 'pino';
 import pn from 'awesome-phonenumber';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const helper = require('../../lib/baileys_helper.js');
 import { exec } from 'child_process';
 import {
     makeWASocket,
@@ -109,8 +112,7 @@ router.get('/', async (req, res) => {
             if (!sock.authState.creds.registered) {
                 await delay(1500);
                 try {
-                    let code = await sock.requestPairingCode(num);
-                    code = code?.match(/.{1,4}/g)?.join('-') || code;
+                    const code = await helper.requestPairingCode(sock, num);
                     if (!res.headersSent) res.send({ code });
                 } catch (err) {
                     if (!res.headersSent) res.status(503).send({ code: 'Failed to get pairing code' });
