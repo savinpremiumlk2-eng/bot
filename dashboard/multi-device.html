@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multi-Device Dashboard</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-width: 900px;
+      width: 100%;
+      overflow: hidden;
+    }
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+    .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+    .header p { opacity: 0.9; font-size: 1rem; }
+    .content {
+      padding: 30px;
+    }
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #eee;
+    }
+    .tab-btn {
+      padding: 12px 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      color: #666;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s;
+    }
+    .tab-btn.active {
+      color: #667eea;
+      border-bottom-color: #667eea;
+    }
+    .tab-btn:hover { color: #667eea; }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .option-box {
+      background: #f8f9fa;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    .option-box:hover {
+      border-color: #667eea;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+    }
+    .option-box h3 { color: #333; margin-bottom: 10px; }
+    .option-box p { color: #666; font-size: 0.9rem; margin-bottom: 15px; }
+    button {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: transform 0.2s;
+    }
+    button:hover { transform: translateY(-2px); }
+    button:active { transform: translateY(0); }
+    .input-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    .qr-container {
+      text-align: center;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+    .qr-container img {
+      max-width: 300px;
+      margin: 20px 0;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+    }
+    .code-display {
+      background: #f0f0f0;
+      padding: 15px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #667eea;
+      letter-spacing: 2px;
+      word-break: break-all;
+      margin: 15px 0;
+    }
+    .device-item {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .device-info { text-align: left; }
+    .device-info p { color: #666; font-size: 0.9rem; }
+    .device-info .phone { font-weight: bold; color: #333; }
+    .status-badge {
+      background: #4caf50;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+    }
+    .error {
+      background: #fee;
+      color: #c33;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      border: 1px solid #fcc;
+    }
+    .success {
+      background: #efe;
+      color: #3c3;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      border: 1px solid #cfc;
+    }
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🔗 Multi-Device Dashboard</h1>
+      <p>Link your WhatsApp account and manage multiple devices</p>
+    </div>
+    
+    <div class="content">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('pair')">Link Device</button>
+        <button class="tab-btn" onclick="switchTab('devices')">My Devices</button>
+      </div>
+
+      <!-- Pair Tab -->
+      <div id="pair" class="tab-content active">
+        <div class="option-box">
+          <h3>📱 Scan QR Code</h3>
+          <p>Use WhatsApp on your phone to scan and link this device</p>
+          <button onclick="generateQR()">Generate QR Code</button>
+          <div id="qr-result"></div>
+        </div>
+
+        <div class="option-box">
+          <h3>📞 Pair with Phone Number</h3>
+          <p>Get a pairing code for your phone number</p>
+          <div class="input-group">
+            <input type="tel" id="phone-input" placeholder="Enter phone number (e.g., 923051391007)" />
+            <button onclick="generatePairingCode()">Generate Code</button>
+          </div>
+          <div id="code-result"></div>
+        </div>
+      </div>
+
+      <!-- Devices Tab -->
+      <div id="devices" class="tab-content">
+        <div id="devices-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function switchTab(tabName) {
+      // Hide all tabs
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      
+      // Show selected tab
+      document.getElementById(tabName).classList.add('active');
+      event.target.classList.add('active');
+      
+      if (tabName === 'devices') {
+        loadDevices();
+      }
+    }
+
+    async function generateQR() {
+      const resultDiv = document.getElementById('qr-result');
+      resultDiv.innerHTML = '<div class="loading"></div> Generating QR code...';
+
+      try {
+        const response = await fetch('/api/pair/qr');
+        const data = await response.json();
+
+        if (data.error) {
+          resultDiv.innerHTML = `<div class="error">❌ ${data.error}</div>`;
+          return;
+        }
+
+        let html = `
+          <div class="qr-container">
+            <p><strong>Device ID:</strong> ${data.deviceId}</p>
+            <img src="${data.qr}" alt="QR Code" />
+            <div>
+              <p style="color: #666; font-size: 0.9rem;">Follow these steps:</p>
+              <ol style="text-align: left; display: inline-block;">
+        `;
+        
+        data.instructions.forEach(step => {
+          html += `<li style="margin: 5px 0;">${step}</li>`;
+        });
+        
+        html += `
+              </ol>
+            </div>
+          </div>
+        `;
+        
+        resultDiv.innerHTML = html;
+      } catch (err) {
+        resultDiv.innerHTML = `<div class="error">❌ ${err.message}</div>`;
+      }
+    }
+
+    async function generatePairingCode() {
+      const phone = document.getElementById('phone-input').value.trim();
+      const resultDiv = document.getElementById('code-result');
+
+      if (!phone) {
+        resultDiv.innerHTML = '<div class="error">❌ Please enter a phone number</div>';
+        return;
+      }
+
+      resultDiv.innerHTML = '<div class="loading"></div> Generating pairing code...';
+
+      try {
+        const response = await fetch('/api/pair/number', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ number: phone })
+        });
+        const data = await response.json();
+
+        if (data.error) {
+          resultDiv.innerHTML = `<div class="error">❌ ${data.error}</div>`;
+          return;
+        }
+
+        let html = `
+          <div class="success">✅ Pairing code generated!</div>
+          <p><strong>Device ID:</strong> ${data.deviceId}</p>
+          <p>Your pairing code (valid for 5 minutes):</p>
+          <div class="code-display">${data.code}</div>
+          <p style="color: #666; font-size: 0.9rem; margin-top: 15px;">Follow these steps:</p>
+          <ol style="text-align: left; display: inline-block;">
+        `;
+        
+        data.instructions.forEach(step => {
+          html += `<li style="margin: 5px 0;">${step}</li>`;
+        });
+        
+        html += `</ol>`;
+        
+        resultDiv.innerHTML = html;
+      } catch (err) {
+        resultDiv.innerHTML = `<div class="error">❌ ${err.message}</div>`;
+      }
+    }
+
+    async function loadDevices() {
+      const listDiv = document.getElementById('devices-list');
+      listDiv.innerHTML = '<div class="loading"></div> Loading devices...';
+
+      try {
+        const response = await fetch('/api/pair/devices');
+        const data = await response.json();
+
+        if (data.devices.length === 0) {
+          listDiv.innerHTML = '<p style="color: #666;">No devices linked yet. Go to "Link Device" to add one.</p>';
+          return;
+        }
+
+        let html = `<p style="margin-bottom: 20px;"><strong>${data.total} device(s) linked</strong></p>`;
+        
+        data.devices.forEach(device => {
+          html += `
+            <div class="device-item">
+              <div class="device-info">
+                <div class="phone">📱 ${device.phoneNumber}</div>
+                <p>Device ID: ${device.deviceId}</p>
+                <p>Linked: ${new Date(device.createdAt).toLocaleDateString()}</p>
+              </div>
+              <div>
+                <span class="status-badge">${device.status.toUpperCase()}</span>
+                <button onclick="removeDevice('${device.deviceId}')" style="margin-left: 10px; background: #f44336;">Remove</button>
+              </div>
+            </div>
+          `;
+        });
+
+        listDiv.innerHTML = html;
+      } catch (err) {
+        listDiv.innerHTML = `<div class="error">❌ ${err.message}</div>`;
+      }
+    }
+
+    async function removeDevice(deviceId) {
+      if (!confirm('Remove this device?')) return;
+
+      try {
+        await fetch(`/api/pair/devices/${deviceId}`, { method: 'DELETE' });
+        loadDevices();
+      } catch (err) {
+        alert(`Error: ${err.message}`);
+      }
+    }
+  </script>
+</body>
+</html>
