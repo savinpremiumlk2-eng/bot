@@ -241,6 +241,8 @@ async function startQasimDev() {
             defaultQueryTimeoutMs: 60000,
             connectTimeoutMs: 60000,
             keepAliveIntervalMs: 10000,
+            retryRequestDelayMs: 250,
+            maxRetries: 5,
         });
 
         const originalSendPresenceUpdate = QasimDev.sendPresenceUpdate;
@@ -501,23 +503,32 @@ async function startQasimDev() {
             }
             
             if (connection === 'close') {
-                const shouldReconnect = (lastDisconnect?.error)?.output?.statusCode !== DisconnectReason.loggedOut;
                 const statusCode = lastDisconnect?.error?.output?.statusCode;
+                const reason = statusCode === DisconnectReason.loggedOut ? 'Logged Out' : 
+                              statusCode === 440 ? 'Token Revoked' :
+                              statusCode === 503 ? 'Service Unavailable' :
+                              statusCode === 515 ? 'Temporarily Unavailable' :
+                              'Unknown';
                 
-                printLog('error', `Connection closed - Status: ${statusCode}`);
+                printLog('error', `Connection closed - Status: ${statusCode} (${reason})`);
+                
+                // Always reconnect except for explicit logout
+                const shouldReconnect = statusCode !== DisconnectReason.loggedOut && statusCode !== 401;
                 
                 if (statusCode === DisconnectReason.loggedOut || statusCode === 401) {
                     try {
                         rmSync('./session', { recursive: true, force: true });
-                        printLog('warning', 'Session logged out. Please re-authenticate');
+                        printLog('warning', 'Session logged out. Session cleared. Please re-authenticate');
+                        return;
                     } catch (error) {
                         printLog('error', `Error deleting session: ${error.message}`);
                     }
                 }
                 
                 if (shouldReconnect) {
-                    printLog('connection', 'Reconnecting in 5 seconds...');
-                    await delay(5000);
+                    const waitTime = [440, 503, 515].includes(statusCode) ? 10000 : 5000;
+                    printLog('connection', `Reconnecting in ${waitTime / 1000} seconds...`);
+                    await delay(waitTime);
                     startQasimDev();
                 }
             }
