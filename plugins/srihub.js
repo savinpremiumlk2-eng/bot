@@ -2,6 +2,17 @@ const axios = require('axios');
 const store = require('../lib/lightweight_store');
 const { fromBuffer } = require('file-type');
 const cheerio = require('cheerio');
+const { URL } = require('url');
+
+function humanSize(bytes) {
+  if (!bytes || isNaN(bytes)) return '';
+  const thresh = 1024;
+  if (Math.abs(bytes) < thresh) return bytes + ' B';
+  const units = ['KB','MB','GB','TB','PB','EB','ZB','YB'];
+  let u = -1;
+  do { bytes /= thresh; ++u; } while (Math.abs(bytes) >= thresh && u < units.length - 1);
+  return bytes.toFixed(1)+' '+units[u];
+}
 
 module.exports = {
   command: 'srihub',
@@ -46,15 +57,15 @@ module.exports = {
       const sentMsg = await sock.sendMessage(chatId, firstImg ? { image: { url: firstImg }, caption } : { text: caption }, { quoted: message });
 
       // Persist the URLs for this user/session
-      const urls = results.map(r => r.link);
+      const urls = results.map(r => r.url || r.link);
       await store.saveSetting(senderId, 'srihub_results', urls);
 
-      // Auto-expire
+      // Auto-expire (10 minutes)
       const timeout = setTimeout(async () => {
         sock.ev.off('messages.upsert', listener);
         await store.saveSetting(senderId, 'srihub_results', null);
         try { await sock.sendMessage(chatId, { text: '⌛ Selection expired. Please run the command again if you want to search.' }, { quoted: sentMsg }); } catch (e) {}
-      }, 5 * 60 * 1000);
+      }, 10 * 60 * 1000);
 
       const listener = async ({ messages }) => {
         const m = messages[0];
@@ -133,6 +144,19 @@ module.exports = {
           const image = movie.gallery && movie.gallery.length ? movie.gallery[0] : null;
           const sentDlMsg = await sock.sendMessage(chatId, image ? { image: { url: image }, caption: info } : { text: info }, { quoted: m });
 
+          // Try to resolve sizes for display (perform HEAD on first few links)
+          const sizeChecks = await Promise.all(flatLinks.slice(0, 6).map(async (l) => {
+            if (l.size) return l.size;
+            try {
+              const head = await axios.head(l.url, { timeout: 5000, maxRedirects: 5, headers: { 'User-Agent': 'Mozilla/5.0' } });
+              const len = head.headers && (head.headers['content-length'] || head.headers['Content-Length']);
+              return len ? humanSize(parseInt(len, 10)) : '';
+            } catch (e) {
+              return '';
+            }
+          }));
+          flatLinks.forEach((l, idx) => { if (!l.size) l.size = sizeChecks[idx] || ''; });
+
           // Persist the actual URLs for this user/session
           await store.saveSetting(senderId, 'srihub_dl_links', flatLinks.map(f => f.url));
 
@@ -141,7 +165,7 @@ module.exports = {
             sock.ev.off('messages.upsert', dlListener);
             await store.saveSetting(senderId, 'srihub_dl_links', null);
             try { await sock.sendMessage(chatId, { text: '⌛ Download selection expired. Please run the command again.' }, { quoted: sentDlMsg }); } catch (e) {}
-          }, 5 * 60 * 1000);
+          }, 10 * 60 * 1000);
 
           const dlListener = async ({ messages }) => {
             const mm = messages[0];
@@ -202,6 +226,14 @@ module.exports = {
                 } catch (htmlErr) {
                   console.warn('SriHub: HTML resolution failed', htmlErr && htmlErr.message);
                 }
+              }
+
+              // Check size limit before sending (100 MB threshold)
+              const sizeLimit = 100 * 1024 * 1024;
+              if (buffer.length && buffer.length > sizeLimit) {
+                // too large to send via WhatsApp — provide direct link(s)
+                await sock.sendMessage(chatId, { text: `⚠️ File is too large to send via WhatsApp (${humanSize(buffer.length)}). Here is the direct link you can use to download:\n${finalUrl}` }, { quoted: mm });
+                return;
               }
 
               const safeTitle = (movie.title || 'movie').replace(/[^a-zA-Z0-9 _.-]/g, '_').slice(0, 200);
