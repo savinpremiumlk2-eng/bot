@@ -3,6 +3,10 @@
     "228209480200306@lid": {
       "id": "228209480200306@lid",
       "name": "Infintiy AI"
+    },
+    "55138840477821@lid": {
+      "id": "55138840477821@lid",
+      "name": "ΣDamDam 🔥♟️🎨➗"
     }
   },
   "chats": {
@@ -11,6 +15,17 @@
       "name": "",
       "conversationTimestamp": 1770183884,
       "unreadCount": 1
+    },
+    "55138840477821@lid": {
+      "id": "55138840477821@lid",
+      "name": "",
+      "conversationTimestamp": 1770222906,
+      "unreadCount": 1
+    },
+    "126611458408464@lid": {
+      "id": "126611458408464@lid",
+      "name": "",
+      "conversationTimestamp": 1770223867
     }
   },
   "botMode": "public",
@@ -1034,6 +1049,695 @@
         },
         "messageTimestamp": {
           "low": 1770183884,
+          "high": 0,
+          "unsigned": true
+        },
+        "participant": null,
+        "pushName": null,
+        "broadcast": null
+      }
+    ],
+    "55138840477821@lid": [
+      {
+        "key": {
+          "remoteJid": "55138840477821@lid",
+          "remoteJidAlt": "94769709748@s.whatsapp.net",
+          "fromMe": true,
+          "id": "AC18EB72DB07535A80CF56CC5EB863BF",
+          "participant": "",
+          "addressingMode": "lid"
+        },
+        "message": {
+          "conversation": ".ping"
+        },
+        "messageTimestamp": 1770222841,
+        "pushName": "Infinity-MD",
+        "broadcast": false
+      },
+      {
+        "key": {
+          "remoteJid": "55138840477821@lid",
+          "remoteJidAlt": "94769709748@s.whatsapp.net",
+          "fromMe": true,
+          "id": "AC3FED719FD443F6616D84F329DB6D34",
+          "participant": "",
+          "addressingMode": "lid"
+        },
+        "message": {
+          "conversation": "New update coming"
+        },
+        "messageTimestamp": 1770222882,
+        "pushName": "Infinity-MD",
+        "broadcast": false
+      },
+      {
+        "key": {
+          "remoteJid": "55138840477821@lid",
+          "remoteJidAlt": "94769709748@s.whatsapp.net",
+          "fromMe": false,
+          "id": "ACE2EAF228C54CB0270B3B17F3DEBBCD",
+          "participant": "",
+          "addressingMode": "lid"
+        },
+        "message": {
+          "conversation": "Its working again?",
+          "messageContextInfo": {
+            "deviceListMetadata": {
+              "recipientKeyHash": "b/vjH1oDYuhraw==",
+              "recipientTimestamp": "1770222712"
+            },
+            "deviceListMetadataVersion": 2,
+            "messageSecret": "8Cxc6J74X71QwhRlRHNggc9DxST+nDmdHVTrve/TThQ="
+          }
+        },
+        "messageTimestamp": 1770222899,
+        "pushName": "ΣDamDam 🔥♟️🎨➗",
+        "broadcast": false
+      },
+      {
+        "key": {
+          "remoteJid": "55138840477821@lid",
+          "remoteJidAlt": "94769709748@s.whatsapp.net",
+          "fromMe": false,
+          "id": "AC50D1FFAAB97D5775600D1C2327C8EF",
+          "participant": "",
+          "addressingMode": "lid"
+        },
+        "message": {
+          "extendedTextMessage": {
+            "text": "NICE",
+            "previewType": "NONE",
+            "contextInfo": {
+              "stanzaId": "AC3FED719FD443F6616D84F329DB6D34",
+              "participant": "126611458408464@lid",
+              "quotedMessage": {
+                "conversation": "New update coming"
+              },
+              "quotedType": "EXPLICIT"
+            },
+            "inviteLinkGroupTypeV2": "DEFAULT"
+          },
+          "messageContextInfo": {
+            "deviceListMetadata": {
+              "recipientKeyHash": "b/vjH1oDYuhraw==",
+              "recipientTimestamp": "1770222712"
+            },
+            "deviceListMetadataVersion": 2,
+            "messageSecret": "uITb8f40OXP/EpARTwu3eXM8V0NnsX76oAQJIe8P7IQ="
+          }
+        },
+        "messageTimestamp": 1770222900,
+        "pushName": "ΣDamDam 🔥♟️🎨➗",
+        "broadcast": false
+      },
+      {
+        "key": {
+          "remoteJid": "55138840477821@lid",
+          "remoteJidAlt": "94769709748@s.whatsapp.net",
+          "fromMe": false,
+          "id": "AC3F65C8759F52B02615A1837447DC7C",
+          "participant": "",
+          "addressingMode": "lid"
+        },
+        "message": {
+          "conversation": "Gotta go now tho",
+          "messageContextInfo": {
+            "deviceListMetadata": {
+              "recipientKeyHash": "b/vjH1oDYuhraw==",
+              "recipientTimestamp": "1770222712"
+            },
+            "deviceListMetadataVersion": 2,
+            "messageSecret": "SoVhlbxTLYumwXYk8schDH3/1XP51guYI98dHsYIjvw="
+          }
+        },
+        "messageTimestamp": 1770222900,
+        "pushName": "ΣDamDam 🔥♟️🎨➗",
+        "broadcast": false
+      },
+      {
+        "key": {
+          "remoteJid": "55138840477821@lid",
+          "remoteJidAlt": "94769709748@s.whatsapp.net",
+          "fromMe": true,
+          "id": "ACBA9E2C2A41034C1087E00EC91D6DFF",
+          "participant": "",
+          "addressingMode": "lid"
+        },
+        "message": {
+          "conversation": ".ping"
+        },
+        "messageTimestamp": 1770222903,
+        "pushName": "Infinity-MD",
+        "broadcast": false
+      },
+      {
+        "key": {
+          "remoteJid": "55138840477821@lid",
+          "remoteJidAlt": "94769709748@s.whatsapp.net",
+          "fromMe": false,
+          "id": "AC4AB6570CAC8BA18838F66FDD4FFE24",
+          "participant": "",
+          "addressingMode": "lid"
+        },
+        "message": {
+          "conversation": "Bye mann",
+          "messageContextInfo": {
+            "deviceListMetadata": {
+              "recipientKeyHash": "b/vjH1oDYuhraw==",
+              "recipientTimestamp": "1770222712"
+            },
+            "deviceListMetadataVersion": 2,
+            "messageSecret": "oiE+oN16/BxqKczzWrlnlJ1cB0U/sCqePmrQP5Y41es="
+          }
+        },
+        "messageTimestamp": 1770222903,
+        "pushName": "ΣDamDam 🔥♟️🎨➗",
+        "broadcast": false
+      },
+      {
+        "key": {
+          "remoteJid": "55138840477821@lid",
+          "remoteJidAlt": "94769709748@s.whatsapp.net",
+          "fromMe": false,
+          "id": "ACEB866DBC577F849FC164A9813A5700",
+          "participant": "",
+          "addressingMode": "lid"
+        },
+        "message": {
+          "conversation": "And tmr Im coming FOR SURE",
+          "messageContextInfo": {
+            "deviceListMetadata": {
+              "recipientKeyHash": "b/vjH1oDYuhraw==",
+              "recipientTimestamp": "1770222712"
+            },
+            "deviceListMetadataVersion": 2,
+            "messageSecret": "djWOwk48mCBIsPBaUl9wy/E4eTr/fI6Bm+8YSUYb414="
+          }
+        },
+        "messageTimestamp": 1770222903,
+        "pushName": "ΣDamDam 🔥♟️🎨➗",
+        "broadcast": false
+      },
+      {
+        "key": {
+          "remoteJid": "55138840477821@lid",
+          "fromMe": true,
+          "id": "3EB0F19B57245375EF49F6"
+        },
+        "message": {
+          "imageMessage": {
+            "url": "https://mmg.whatsapp.net/o1/v/t24/f2/m234/AQNJ0AmCEg-vNpQmygCQ8r59x6yas8Hc7nEy7Vr4j_cQrAG-xBoJUvCLfwJQyH5K_TKzNsYLrvpViwLgK2PD6bbXlUesC8d_Z-8DYHaW3A?ccb=9-4&oh=01_Q5Aa3gHVOACLOXzWBJv_e3bn6lNcP6MXyS8KtmdWGvIRzMhM0w&oe=69AAF965&_nc_sid=e6ed6c&mms3=true",
+            "mimetype": "image/jpeg",
+            "caption": "╭─〔 ⚡ INFINITY MD — STATUS 〕─╮\n│ 💠 Infinity MD — v5.1.0\n│\n│ 🏓 RTT        : 2.60 ms\n│ ⏱ Uptime     : 0d 0h 0m 18s\n│ 💾 RSS        : 249.7 MB\n│ 📦 Heap       : 77.5 / 206.4 MB\n│ 🧮 Load(1m)   : 0.11    │ CPU Cores: 2\n│ 🖥 Platform   : Linux x64\n│ ⚙️ CPU Model  : AMD EPYC 7763 64-Core Processor\n│\n│ ✨ Stay awesome — Infinity MD ✨\n╰──────────────────────────────╯",
+            "fileSha256": "dAMFMEyPcGB9tixbJmoGYbJVPOo5Jjt7wubgodlk14Y=",
+            "fileLength": "115913",
+            "height": 412,
+            "width": 1024,
+            "mediaKey": "AFe7uYLrEHadxk+6ksvqe5M+eY3NQqzQhGZmE+n3i5w=",
+            "fileEncSha256": "k0Wg7dp7l2OE1tzuZAzoUpbA+2VV3NKqZU101h32lKE=",
+            "directPath": "/o1/v/t24/f2/m234/AQNJ0AmCEg-vNpQmygCQ8r59x6yas8Hc7nEy7Vr4j_cQrAG-xBoJUvCLfwJQyH5K_TKzNsYLrvpViwLgK2PD6bbXlUesC8d_Z-8DYHaW3A?ccb=9-4&oh=01_Q5Aa3gHVOACLOXzWBJv_e3bn6lNcP6MXyS8KtmdWGvIRzMhM0w&oe=69AAF965&_nc_sid=e6ed6c",
+            "mediaKeyTimestamp": "1770222904",
+            "jpegThumbnail": "/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wAARCAANACADASIAAhEBAxEB/8QAGAAAAgMAAAAAAAAAAAAAAAAABAUAAwb/xAAjEAACAgICAgEFAAAAAAAAAAABAgMREiEABBMicTFRYaGx/8QAFgEBAQEAAAAAAAAAAAAAAAAAAAME/8QAGBEAAwEBAAAAAAAAAAAAAAAAAAECERL/2gAMAwEAAhEDEQA/AMjB1gQScjo4473+eMet42jwjgLvGmT2Bejv54JketIXjrY+lckUxQMd25skGuSe0aZyA/sJ4FdmgRTGaZfUkXdfv+cVT9ZkiyItj7WDoD45fJMZExOX3218HlSyLY0OJWC30f/Z",
+            "contextInfo": {
+              "stanzaId": "ACBA9E2C2A41034C1087E00EC91D6DFF",
+              "participant": "94778507806@s.whatsapp.net",
+              "quotedMessage": {
+                "conversation": ".ping"
+              }
+            }
+          }
+        },
+        "messageTimestamp": {
+          "low": 1770222904,
+          "high": 0,
+          "unsigned": true
+        },
+        "participant": null,
+        "pushName": null,
+        "broadcast": null
+      },
+      {
+        "key": {
+          "remoteJid": "55138840477821@lid",
+          "remoteJidAlt": "94769709748@s.whatsapp.net",
+          "fromMe": true,
+          "id": "AC3058196A1EB41B2C40EF8A7B10C6A0",
+          "participant": "",
+          "addressingMode": "lid"
+        },
+        "message": {
+          "conversation": "Bye"
+        },
+        "messageTimestamp": 1770222906,
+        "pushName": "Infinity-MD",
+        "broadcast": false
+      }
+    ],
+    "126611458408464@lid": [
+      {
+        "key": {
+          "remoteJid": "126611458408464@lid",
+          "remoteJidAlt": "94778507806@s.whatsapp.net",
+          "fromMe": true,
+          "id": "AC404ECDDF84BF36F09285550394229B",
+          "participant": "",
+          "addressingMode": "lid"
+        },
+        "message": {
+          "extendedTextMessage": {
+            "text": ".ping",
+            "previewType": "NONE",
+            "inviteLinkGroupTypeV2": "DEFAULT"
+          }
+        },
+        "messageTimestamp": 1770223279,
+        "pushName": "Infinity-MD",
+        "broadcast": false
+      },
+      {
+        "key": {
+          "remoteJid": "126611458408464@lid",
+          "fromMe": true,
+          "id": "3EB0E42053FF3AA519189C"
+        },
+        "message": {
+          "imageMessage": {
+            "url": "https://mmg.whatsapp.net/o1/v/t24/f2/m237/AQMXSche6Jrj-osz_YzrGnWESBa08Wla47UWyQi0MvsS-mohhmynMUSu5JS4ISmwUOV3NqkRedRIizKuNpLsiO8Atj4Z3WiNdEYZHqxQ_g?ccb=9-4&oh=01_Q5Aa3gFD_3Hstc7lIpGNirZwJfzjW1TUSl_JGSom6KPMBi_EKQ&oe=69AB039C&_nc_sid=e6ed6c&mms3=true",
+            "mimetype": "image/jpeg",
+            "caption": "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\n┃ ⚡ PING STATUS ⚡                               ┃\n┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫\n┃ 🤖 Infinity MD  •  v1.0.1                     ┃\n┃ ━━━━━━━━━━━━━━━━━━━━                          ┃\n┃ 🟢 Ping: 2.64 ms  (FAST) ■■■■□                ┃\n┃ 📤 Send: 0.30 ms                              ┃\n┃ ⏱️ Uptime: 18s                                ┃\n┃ 💾 RAM: 242.4 MB   |   📦 Heap: 76.6/206.2 MB ┃\n┃ 🧠 CPU: 2 cores   |   📈 Load(1m): 0.38       ┃\n┃ 🖥️ OS: Linux x64                             ┃\n┃ 🧩 Node: v24.11.1                             ┃\n┃ ━━━━━━━━━━━━━━━━━━━━                          ┃\n┃ ✨ Infinity MD — Ready to serve ✨              ┃\n┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛",
+            "fileSha256": "L3VpZ7FYkMpErx531B5ViPFR34aU8HF7Dg6geHNFOdc=",
+            "fileLength": "51496",
+            "mediaKey": "7eq4J2eQmNFK06EYsIvwJyXwh36I1lPAniRz3/ffG1E=",
+            "fileEncSha256": "HGZ9Ojyd+QBrORRM+ode80roW3uknmpJHW7WOAQ6Epg=",
+            "directPath": "/o1/v/t24/f2/m237/AQMXSche6Jrj-osz_YzrGnWESBa08Wla47UWyQi0MvsS-mohhmynMUSu5JS4ISmwUOV3NqkRedRIizKuNpLsiO8Atj4Z3WiNdEYZHqxQ_g?ccb=9-4&oh=01_Q5Aa3gFD_3Hstc7lIpGNirZwJfzjW1TUSl_JGSom6KPMBi_EKQ&oe=69AB039C&_nc_sid=e6ed6c",
+            "mediaKeyTimestamp": "1770223280",
+            "contextInfo": {
+              "stanzaId": "AC404ECDDF84BF36F09285550394229B",
+              "participant": "94778507806@s.whatsapp.net",
+              "quotedMessage": {
+                "extendedTextMessage": {
+                  "text": ".ping",
+                  "previewType": "NONE",
+                  "inviteLinkGroupTypeV2": "DEFAULT"
+                }
+              }
+            }
+          }
+        },
+        "messageTimestamp": {
+          "low": 1770223280,
+          "high": 0,
+          "unsigned": true
+        },
+        "participant": null,
+        "pushName": null,
+        "broadcast": null
+      },
+      {
+        "key": {
+          "remoteJid": "126611458408464@lid",
+          "remoteJidAlt": "94778507806@s.whatsapp.net",
+          "fromMe": true,
+          "id": "AC08CF7CCF05509D34FADDEA01F1477B",
+          "participant": "",
+          "addressingMode": "lid"
+        },
+        "message": {
+          "extendedTextMessage": {
+            "text": ".menu",
+            "previewType": "NONE",
+            "contextInfo": {
+              "entryPointConversionSource": "non_contact",
+              "entryPointConversionApp": "whatsapp",
+              "entryPointConversionDelaySeconds": 98663
+            },
+            "inviteLinkGroupTypeV2": "DEFAULT"
+          }
+        },
+        "messageTimestamp": 1770223384,
+        "pushName": "Infinity-MD",
+        "broadcast": false
+      },
+      {
+        "key": {
+          "remoteJid": "126611458408464@lid",
+          "remoteJidAlt": "94778507806@s.whatsapp.net",
+          "fromMe": true,
+          "id": "AC7611A596923D48DEDD226ADF88EDB2",
+          "participant": "",
+          "addressingMode": "lid"
+        },
+        "message": {
+          "extendedTextMessage": {
+            "text": ".ping",
+            "previewType": "NONE",
+            "inviteLinkGroupTypeV2": "DEFAULT"
+          }
+        },
+        "messageTimestamp": 1770223444,
+        "pushName": "Infinity-MD",
+        "broadcast": false
+      },
+      {
+        "key": {
+          "remoteJid": "126611458408464@lid",
+          "fromMe": true,
+          "id": "3EB0136A35AF27B1AF1132"
+        },
+        "message": {
+          "extendedTextMessage": {
+            "text": "❓ Did you mean *.bing*?",
+            "contextInfo": {
+              "stanzaId": "AC7611A596923D48DEDD226ADF88EDB2",
+              "participant": "94778507806@s.whatsapp.net",
+              "quotedMessage": {
+                "extendedTextMessage": {
+                  "text": ".ping",
+                  "previewType": "NONE",
+                  "inviteLinkGroupTypeV2": "DEFAULT"
+                }
+              }
+            }
+          }
+        },
+        "messageTimestamp": {
+          "low": 1770223444,
+          "high": 0,
+          "unsigned": true
+        },
+        "participant": null,
+        "pushName": null,
+        "broadcast": null
+      },
+      {
+        "key": {
+          "remoteJid": "126611458408464@lid",
+          "remoteJidAlt": "94778507806@s.whatsapp.net",
+          "fromMe": true,
+          "id": "AC42B6A396F212C3785F9D6F9859FA9F",
+          "participant": "",
+          "addressingMode": "lid"
+        },
+        "message": {
+          "extendedTextMessage": {
+            "text": ".ping",
+            "previewType": "NONE",
+            "inviteLinkGroupTypeV2": "DEFAULT"
+          }
+        },
+        "messageTimestamp": 1770223448,
+        "pushName": "Infinity-MD",
+        "broadcast": false
+      },
+      {
+        "key": {
+          "remoteJid": "126611458408464@lid",
+          "fromMe": true,
+          "id": "3EB0B2492DC27D4E3D820F"
+        },
+        "message": {
+          "extendedTextMessage": {
+            "text": "❓ Did you mean *.bing*?",
+            "contextInfo": {
+              "stanzaId": "AC42B6A396F212C3785F9D6F9859FA9F",
+              "participant": "94778507806@s.whatsapp.net",
+              "quotedMessage": {
+                "extendedTextMessage": {
+                  "text": ".ping",
+                  "previewType": "NONE",
+                  "inviteLinkGroupTypeV2": "DEFAULT"
+                }
+              }
+            }
+          }
+        },
+        "messageTimestamp": {
+          "low": 1770223448,
+          "high": 0,
+          "unsigned": true
+        },
+        "participant": null,
+        "pushName": null,
+        "broadcast": null
+      },
+      {
+        "key": {
+          "remoteJid": "126611458408464@lid",
+          "remoteJidAlt": "94778507806@s.whatsapp.net",
+          "fromMe": true,
+          "id": "AC463FF5654515A933B81AAA441408C1",
+          "participant": "",
+          "addressingMode": "lid"
+        },
+        "message": {
+          "extendedTextMessage": {
+            "text": ".ping",
+            "previewType": "NONE",
+            "inviteLinkGroupTypeV2": "DEFAULT"
+          }
+        },
+        "messageTimestamp": 1770223527,
+        "pushName": "Infinity-MD",
+        "broadcast": false
+      },
+      {
+        "key": {
+          "remoteJid": "126611458408464@lid",
+          "fromMe": true,
+          "id": "3EB0FC7F6A069599F96BAA"
+        },
+        "message": {
+          "extendedTextMessage": {
+            "text": "❓ Did you mean *.bing*?",
+            "contextInfo": {
+              "stanzaId": "AC463FF5654515A933B81AAA441408C1",
+              "participant": "94778507806@s.whatsapp.net",
+              "quotedMessage": {
+                "extendedTextMessage": {
+                  "text": ".ping",
+                  "previewType": "NONE",
+                  "inviteLinkGroupTypeV2": "DEFAULT"
+                }
+              }
+            }
+          }
+        },
+        "messageTimestamp": {
+          "low": 1770223527,
+          "high": 0,
+          "unsigned": true
+        },
+        "participant": null,
+        "pushName": null,
+        "broadcast": null
+      },
+      {
+        "key": {
+          "remoteJid": "126611458408464@lid",
+          "remoteJidAlt": "94778507806@s.whatsapp.net",
+          "fromMe": true,
+          "id": "AC5E6453FBC4741A6454A18D2FB37F7E",
+          "participant": "",
+          "addressingMode": "lid"
+        },
+        "message": {
+          "extendedTextMessage": {
+            "text": "Ping",
+            "previewType": "NONE",
+            "contextInfo": {
+              "entryPointConversionSource": "non_contact",
+              "entryPointConversionApp": "whatsapp",
+              "entryPointConversionDelaySeconds": 98935
+            },
+            "inviteLinkGroupTypeV2": "DEFAULT"
+          }
+        },
+        "messageTimestamp": 1770223655,
+        "pushName": "Infinity-MD",
+        "broadcast": false
+      },
+      {
+        "key": {
+          "remoteJid": "126611458408464@lid",
+          "remoteJidAlt": "94778507806@s.whatsapp.net",
+          "fromMe": true,
+          "id": "ACBC1407F172717728A3DF6CAECFBC71",
+          "participant": "",
+          "addressingMode": "lid"
+        },
+        "message": {
+          "extendedTextMessage": {
+            "text": ".ping",
+            "previewType": "NONE",
+            "contextInfo": {
+              "entryPointConversionSource": "non_contact",
+              "entryPointConversionApp": "whatsapp",
+              "entryPointConversionDelaySeconds": 98940
+            },
+            "inviteLinkGroupTypeV2": "DEFAULT"
+          }
+        },
+        "messageTimestamp": 1770223660,
+        "pushName": "Infinity-MD",
+        "broadcast": false
+      },
+      {
+        "key": {
+          "remoteJid": "126611458408464@lid",
+          "remoteJidAlt": "94778507806@s.whatsapp.net",
+          "fromMe": true,
+          "id": "AC82BAA031E5C85F6E8CB596265D9262",
+          "participant": "",
+          "addressingMode": "lid"
+        },
+        "message": {
+          "extendedTextMessage": {
+            "text": ".ping",
+            "previewType": "NONE",
+            "inviteLinkGroupTypeV2": "DEFAULT"
+          }
+        },
+        "messageTimestamp": 1770223675,
+        "pushName": "Infinity-MD",
+        "broadcast": false
+      },
+      {
+        "key": {
+          "remoteJid": "126611458408464@lid",
+          "fromMe": true,
+          "id": "3EB0E44582431804522A67"
+        },
+        "message": {
+          "extendedTextMessage": {
+            "text": "❓ Did you mean *.bing*?",
+            "contextInfo": {
+              "stanzaId": "AC82BAA031E5C85F6E8CB596265D9262",
+              "participant": "94778507806@s.whatsapp.net",
+              "quotedMessage": {
+                "extendedTextMessage": {
+                  "text": ".ping",
+                  "previewType": "NONE",
+                  "inviteLinkGroupTypeV2": "DEFAULT"
+                }
+              }
+            }
+          }
+        },
+        "messageTimestamp": {
+          "low": 1770223676,
+          "high": 0,
+          "unsigned": true
+        },
+        "participant": null,
+        "pushName": null,
+        "broadcast": null
+      },
+      {
+        "key": {
+          "remoteJid": "126611458408464@lid",
+          "remoteJidAlt": "94778507806@s.whatsapp.net",
+          "fromMe": true,
+          "id": "AC946862726D90880E0CAFB26205E835",
+          "participant": "",
+          "addressingMode": "lid"
+        },
+        "message": {
+          "extendedTextMessage": {
+            "text": ".menu",
+            "previewType": "NONE",
+            "inviteLinkGroupTypeV2": "DEFAULT"
+          }
+        },
+        "messageTimestamp": 1770223684,
+        "pushName": "Infinity-MD",
+        "broadcast": false
+      },
+      {
+        "key": {
+          "remoteJid": "126611458408464@lid",
+          "fromMe": true,
+          "id": "3EB01307C3A1561E8AA403"
+        },
+        "message": {
+          "imageMessage": {
+            "url": "https://mmg.whatsapp.net/o1/v/t24/f2/m232/AQNC9aVCyTgaR_r_rAB9GXe5Vi8dn8RdjBrSH2cBa990waAEHYp9HgC2gjzNHBFmKB_eMOHzmD1WoRP5cn4hTCn_WWC0ubg9IUeKKWgMxA?ccb=9-4&oh=01_Q5Aa3gELIQBvwd4uhSUyKVLbotbbPCOVcJshd25EsafQrOEeHA&oe=69AAE46B&_nc_sid=e6ed6c&mms3=true",
+            "mimetype": "image/jpeg",
+            "caption": "🤖 *MAIN MENU*\n╭───〔 🤖 INFINITY MD 〕───\n│ 👤 *Owner* : Default Publisher\n│ 📊 *Commands* : 253+\n│ ⏱ *Uptime* : 18 seconds\n│ 🚀 *RAM* : 260.67MB / 62.8GB\n│ ⌨️ *Prefix* : .\n╰────────────────────\n\n╭───〔 📂 MAIN MENUS 〕───\n│ 👑 .ownermenu\n│ 🧩 .groupmenu\n│ 📥 .dlmenu\n│ 🎮 .funmenu\n│ 🤖 .aimenu\n│ 🖼 .stickermenu\n│ 🎵 .audiomenu\n│ 🎥 .videomenu\n│ 🔍 .searchmenu\n│ 🛠 .toolsmenu\n│ 🧠 .convertmenu\n│ ⚙️ .settingsmenu\n│ 🗄 .dbmenu\n│ 🧪 .othermenu\n╰────────────────────\n\n> 💫 *INFINITY MD BOT* - Powered by AI",
+            "fileSha256": "dAMFMEyPcGB9tixbJmoGYbJVPOo5Jjt7wubgodlk14Y=",
+            "fileLength": "115913",
+            "height": 412,
+            "width": 1024,
+            "mediaKey": "GzSVU/X/FWl8HL+x0o52NQZ8zO2eHFZ+UdmS8m8lGQ8=",
+            "fileEncSha256": "KFH8RsCf6q9aYkYKySDjZ0LAfnOZP0Tgk9Zdad+k42E=",
+            "directPath": "/o1/v/t24/f2/m232/AQNC9aVCyTgaR_r_rAB9GXe5Vi8dn8RdjBrSH2cBa990waAEHYp9HgC2gjzNHBFmKB_eMOHzmD1WoRP5cn4hTCn_WWC0ubg9IUeKKWgMxA?ccb=9-4&oh=01_Q5Aa3gELIQBvwd4uhSUyKVLbotbbPCOVcJshd25EsafQrOEeHA&oe=69AAE46B&_nc_sid=e6ed6c",
+            "mediaKeyTimestamp": "1770223686",
+            "jpegThumbnail": "/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wAARCAANACADASIAAhEBAxEB/8QAGAAAAgMAAAAAAAAAAAAAAAAABAUAAwb/xAAjEAACAgICAgEFAAAAAAAAAAABAgMREiEABBMicTFRYaGx/8QAFgEBAQEAAAAAAAAAAAAAAAAAAAME/8QAGBEAAwEBAAAAAAAAAAAAAAAAAAECERL/2gAMAwEAAhEDEQA/AMjB1gQScjo4473+eMet42jwjgLvGmT2Bejv54JketIXjrY+lckUxQMd25skGuSe0aZyA/sJ4FdmgRTGaZfUkXdfv+cVT9ZkiyItj7WDoD45fJMZExOX3218HlSyLY0OJWC30f/Z",
+            "contextInfo": {
+              "stanzaId": "AC946862726D90880E0CAFB26205E835",
+              "participant": "94778507806@s.whatsapp.net",
+              "quotedMessage": {
+                "extendedTextMessage": {
+                  "text": ".menu",
+                  "previewType": "NONE",
+                  "inviteLinkGroupTypeV2": "DEFAULT"
+                }
+              }
+            }
+          }
+        },
+        "messageTimestamp": {
+          "low": 1770223686,
+          "high": 0,
+          "unsigned": true
+        },
+        "participant": null,
+        "pushName": null,
+        "broadcast": null
+      },
+      {
+        "key": {
+          "remoteJid": "126611458408464@lid",
+          "remoteJidAlt": "94778507806@s.whatsapp.net",
+          "fromMe": true,
+          "id": "AC96ADBBD1E73DF0BCD4D2D3AF335542",
+          "participant": "",
+          "addressingMode": "lid"
+        },
+        "message": {
+          "extendedTextMessage": {
+            "text": ".ping",
+            "previewType": "NONE",
+            "inviteLinkGroupTypeV2": "DEFAULT"
+          }
+        },
+        "messageTimestamp": 1770223867,
+        "pushName": "Infinity-MD",
+        "broadcast": false
+      },
+      {
+        "key": {
+          "remoteJid": "126611458408464@lid",
+          "fromMe": true,
+          "id": "3EB0B96E1EE73BA107FBB4"
+        },
+        "message": {
+          "extendedTextMessage": {
+            "text": "❓ Did you mean *.bing*?",
+            "contextInfo": {
+              "stanzaId": "AC96ADBBD1E73DF0BCD4D2D3AF335542",
+              "participant": "94778507806@s.whatsapp.net",
+              "quotedMessage": {
+                "extendedTextMessage": {
+                  "text": ".ping",
+                  "previewType": "NONE",
+                  "inviteLinkGroupTypeV2": "DEFAULT"
+                }
+              }
+            }
+          }
+        },
+        "messageTimestamp": {
+          "low": 1770223867,
           "high": 0,
           "unsigned": true
         },

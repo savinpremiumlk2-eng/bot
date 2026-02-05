@@ -34,3 +34,4 @@
  *.njsproj
  *.sln
  *.sw?
+session/

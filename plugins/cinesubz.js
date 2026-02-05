@@ -2,6 +2,9 @@ const axios = require('axios');
 const store = require('../lib/lightweight_store');
 const { fromBuffer } = require('file-type');
 const cheerio = require('cheerio');
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
 
 module.exports = {
   command: 'cinesubz',
@@ -172,50 +175,96 @@ module.exports = {
             await sock.sendMessage(chatId, { text: `⬇️ Downloading selection #${choice2}... This may take a while depending on file size.` }, { quoted: mm });
 
             try {
-              // Try direct fetch
-              let resBuf = await axios.get(finalUrl, { responseType: 'arraybuffer', timeout: 5 * 60 * 1000, maxRedirects: 10, headers: { 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64)' } });
-              let buffer = Buffer.from(resBuf.data, 'binary');
-              let type = await fromBuffer(buffer);
+              // Stream download to temp file with more robust resolution
+              const downloadToTemp = async (url, attempts = 3) => {
+                for (let i = 0; i < attempts; i++) {
+                  try {
+                    const tmpFile = path.join(os.tmpdir(), `cinesubz_${Date.now()}_${Math.random().toString(36).slice(2,8)}`);
+                    const res = await axios.get(url, { responseType: 'stream', timeout: 5 * 60 * 1000, maxRedirects: 10, headers: { 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64)' } });
+                    const ctype = (res.headers && res.headers['content-type']) || '';
+                    const clen = parseInt(res.headers && res.headers['content-length'] || '0');
 
-              // If response is HTML or not a media file, attempt to extract a real media URL from the page
-              const looksLikeHtml = !type || (type && type.mime && type.mime.startsWith('text')) || buffer.slice(0, 16).toString().trim().startsWith('<');
-              if (looksLikeHtml) {
-                try {
-                  const textRes = await axios.get(finalUrl, { responseType: 'text', timeout: 20000, maxRedirects: 10, headers: { 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64)' } });
-                  const html = textRes.data || '';
-                  // Try regex for direct mp4 links
-                    const mp4Match = html.match(/https?:\/\/[^'"\s>]+\.mp4/gi);
-                  let realUrl = mp4Match && mp4Match.length ? mp4Match[0] : null;
-                  if (!realUrl) {
-                    // Try parsing common video/source tags
-                    const $ = cheerio.load(html);
-                    const source = $('video source[src]').attr('src') || $('video[src]').attr('src') || $('a[href$=".mp4"]').attr('href');
-                    if (source) realUrl = new URL(source, finalUrl).toString();
+                    // If HTML returned, try to extract direct media link then retry
+                    if (ctype.includes('text') || (ctype === '' && clen > 0 && clen < 10000)) {
+                      try {
+                        const textRes = await axios.get(url, { responseType: 'text', timeout: 20000, maxRedirects: 10, headers: { 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64)' } });
+                        const html = textRes.data || '';
+                        const mp4Match = html.match(/https?:\/\/[^'"\s>]+\.(?:mp4|mkv|webm)/gi);
+                        let realUrl = mp4Match && mp4Match.length ? mp4Match[0] : null;
+                        if (!realUrl) {
+                          const $ = cheerio.load(html);
+                          const source = $('video source[src]').attr('src') || $('video[src]').attr('src') || $('a[href$=".mp4"]').attr('href');
+                          if (source) realUrl = new URL(source, url).toString();
+                        }
+                        if (realUrl) {
+                          url = realUrl;
+                          continue; // retry with resolved URL
+                        }
+                      } catch (htmlErr) {
+                        console.warn('Cinesubz: HTML resolution failed', htmlErr && htmlErr.message);
+                      }
+                      // If still HTML, throw to try next attempt
+                      throw new Error('HTML response, could not resolve media');
+                    }
+
+                    // Pipe stream to temporary file
+                    const writer = fs.createWriteStream(tmpFile);
+                    await new Promise((resolve, reject) => {
+                      res.data.pipe(writer);
+                      res.data.on('error', reject);
+                      writer.on('finish', resolve);
+                      writer.on('error', reject);
+                    });
+
+                    const stats = fs.statSync(tmpFile);
+                    if (stats.size < 5000) {
+                      fs.unlinkSync(tmpFile);
+                      throw new Error('Downloaded file too small');
+                    }
+                    return { tmpFile, size: stats.size, contentType: ctype };
+                  } catch (err) {
+                    if (i === attempts - 1) throw err;
+                    await new Promise(r => setTimeout(r, 1000 * (i + 1)));
                   }
-                  if (realUrl) {
-                    // fetch the real url
-                    resBuf = await axios.get(realUrl, { responseType: 'arraybuffer', timeout: 5 * 60 * 1000, maxRedirects: 10, headers: { 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64)' } });
-                    buffer = Buffer.from(resBuf.data, 'binary');
-                    type = await fromBuffer(buffer);
-                  }
-                } catch (htmlErr) {
-                  console.warn('Cinesubz: HTML resolution failed', htmlErr && htmlErr.message);
                 }
+              };
+
+              const dlResult = await downloadToTemp(finalUrl, 3);
+              if (!dlResult) {
+                throw new Error('Failed to resolve or download file');
               }
+
+              // Try detect file type by reading the initial bytes
+              const readChunk = (file, len = 8192) => new Promise((resolve, reject) => {
+                const rs = fs.createReadStream(file, { start: 0, end: len - 1 });
+                const chunks = [];
+                rs.on('data', c => chunks.push(c));
+                rs.on('end', () => resolve(Buffer.concat(chunks)));
+                rs.on('error', reject);
+              });
+              const bufferStart = await readChunk(dlResult.tmpFile, 8192);
+              let type = await fromBuffer(bufferStart);
 
               const safeTitle = (movie.title || 'movie').replace(/[^a-zA-Z0-9 _.-]/g, '_').slice(0, 200);
               const ext = (type && type.ext) ? type.ext : 'mp4';
               const fileName = `${safeTitle}_${choice2}.${ext}`;
 
+              // Send based on detected type
               if (type && type.mime && type.mime.startsWith('image/')) {
-                await sock.sendMessage(chatId, { image: buffer, caption: `Here is ${fileName}` }, { quoted: mm });
+                const buf = fs.readFileSync(dlResult.tmpFile);
+                await sock.sendMessage(chatId, { image: buf, caption: `Here is ${fileName}` }, { quoted: mm });
               } else if (type && type.mime && type.mime.startsWith('video/')) {
-                await sock.sendMessage(chatId, { document: buffer, mimetype: type.mime, fileName }, { quoted: mm });
+                const stream = fs.createReadStream(dlResult.tmpFile);
+                await sock.sendMessage(chatId, { document: stream, mimetype: type.mime, fileName }, { quoted: mm });
               } else if (type && type.mime && type.mime.startsWith('audio/')) {
-                await sock.sendMessage(chatId, { audio: buffer, mimetype: type.mime }, { quoted: mm });
+                const stream = fs.createReadStream(dlResult.tmpFile);
+                await sock.sendMessage(chatId, { audio: stream, mimetype: type.mime }, { quoted: mm });
               } else {
-                await sock.sendMessage(chatId, { document: buffer, mimetype: type ? type.mime : 'application/octet-stream', fileName }, { quoted: mm });
+                const stream = fs.createReadStream(dlResult.tmpFile);
+                await sock.sendMessage(chatId, { document: stream, mimetype: type ? type.mime : 'application/octet-stream', fileName }, { quoted: mm });
               }
+
+              try { fs.unlinkSync(dlResult.tmpFile); } catch (e) {}
 
             } catch (e) {
               console.error('❌ Cinesubz Download Error:', e.message || e);

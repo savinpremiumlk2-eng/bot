@@ -8,12 +8,69 @@ function pickRandomAsset() {
   const assetsDir = path.join(__dirname, '../assets');
   try {
     const files = fs.readdirSync(assetsDir).filter(f => /\.(jpe?g|png|webp)$/i.test(f));
-    if (!files || files.length === 0) return null;
+    if (!files.length) return null;
     const choice = files[Math.floor(Math.random() * files.length)];
     return path.join(assetsDir, choice);
-  } catch (e) {
+  } catch {
     return null;
   }
+}
+
+async function dnsPing(host = 'google.com', timeoutMs = 2000) {
+  const t0 = process.hrtime.bigint();
+  const lookup = dns.promises.lookup(host);
+
+  const res = await Promise.race([
+    lookup.then(() => 'ok').catch(() => 'err'),
+    new Promise(r => setTimeout(() => r('timeout'), timeoutMs)),
+  ]);
+
+  if (res !== 'ok') return -1;
+
+  const t1 = process.hrtime.bigint();
+  return Number(t1 - t0) / 1e6;
+}
+
+function uptimeShort(sec) {
+  sec = Math.floor(sec);
+  const d = Math.floor(sec / 86400);
+  const h = Math.floor((sec % 86400) / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+
+  if (d > 0) return `${d}d ${h}h`;
+  if (h > 0) return `${h}h ${m}m`;
+  return `${m}m`;
+}
+
+function mb(n) {
+  return (n / 1024 / 1024).toFixed(0);
+}
+
+function grade(ms) {
+  if (ms < 0) return { icon: '⚪', txt: 'N/A' };
+  if (ms <= 120) return { icon: '🟢', txt: 'FAST' };
+  if (ms <= 250) return { icon: '🟡', txt: 'OK' };
+  if (ms <= 450) return { icon: '🟠', txt: 'SLOW' };
+  return { icon: '🔴', txt: 'BAD' };
+}
+
+function box(lines) {
+  // keep it phone-friendly
+  const width = Math.min(
+    32,
+    Math.max(...lines.map(l => l.length), 22)
+  );
+
+  const top = `┌${'─'.repeat(width)}┐`;
+  const bot = `└${'─'.repeat(width)}┘`;
+
+  const out = [top];
+  for (const raw of lines) {
+    const l = raw.length > width ? raw.slice(0, width) : raw;
+    out.push(`│${l.padEnd(width, ' ')}│`);
+  }
+  out.push(bot);
+  return out.join('\n');
 }
 
 module.exports = {
@@ -22,73 +79,51 @@ module.exports = {
   category: 'general',
   description: 'Check bot response time',
   usage: '.ping',
-  isPrefixless: true,
 
-  async handler(sock, message, args) {
+  async handler(sock, message) {
     const chatId = message.key.remoteJid;
 
-    // Measure a small network operation (DNS lookup) for a realistic ping
-    let latencyMs = 0;
-    try {
-      const t0 = process.hrtime.bigint();
-      await dns.promises.lookup('google.com');
-      const t1 = process.hrtime.bigint();
-      latencyMs = Number(t1 - t0) / 1e6;
-    } catch (e) {
-      latencyMs = -1;
-    }
-
-    const uptimeSec = Math.floor(process.uptime());
-    const days = Math.floor(uptimeSec / 86400);
-    const hours = Math.floor((uptimeSec % 86400) / 3600);
-    const mins = Math.floor((uptimeSec % 3600) / 60);
-    const secs = uptimeSec % 60;
+    const ms = await dnsPing('google.com', 2000);
+    const g = grade(ms);
 
     const mem = process.memoryUsage();
-    const rssMB = (mem.rss || 0) / 1024 / 1024;
-    const heapUsedMB = (mem.heapUsed || 0) / 1024 / 1024;
-    const heapTotalMB = (mem.heapTotal || 0) / 1024 / 1024;
+    const rss = mb(mem.rss || 0);
+    const heapU = mb(mem.heapUsed || 0);
+    const heapT = mb(mem.heapTotal || 0);
 
-    const cpus = os.cpus() || [];
-    const cpuModel = cpus[0] ? cpus[0].model : 'unknown';
-    const cpuCount = cpus.length || 1;
-    const platform = `${os.type()} ${os.arch()}`;
-    const load1 = os.loadavg()[0] ? os.loadavg()[0].toFixed(2) : '0.00';
+    const botName = (settings.botName || 'Infinity MD').toString();
+    const version = (settings.version || 'unknown').toString();
 
-    const botName = settings.botName || 'Infinity MD';
-    const version = settings.version || 'unknown';
+    // MOBILE-FIRST LINES (short!)
+    const lines = [
+      '  ⚡ INFINITY MD PING ⚡  ',
+      '────────────────────────',
+      `🏓 Ping : ${ms < 0 ? 'N/A' : ms.toFixed(0) + 'ms'}  ${g.icon} ${g.txt}`,
+      `⏱ Up   : ${uptimeShort(process.uptime())}`,
+      `💾 RAM  : ${rss}MB`,
+      `📦 Heap : ${heapU}/${heapT}MB`,
+      `🖥 OS   : ${os.type()} ${os.arch()}`,
+      `🏷 Ver  : v${version}`,
+      '────────────────────────',
+      '  ✅ Online & Ready  ',
+    ];
 
-    // Improved .ping design with emoji, color, and clear formatting
-    const lines = [];
-    lines.push('┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓');
-    lines.push('┃ ⚡ 𝙄𝙉𝙁𝙄𝙉𝙄𝙏𝙔 𝙈𝘿 — 𝙋𝙄𝙉𝙂 𝙎𝙏𝘼𝙏𝙐𝙎 ⚡ ┃');
-    lines.push('┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫');
-    lines.push(`┃ 🤖 *Bot:* ${botName}`);
-    lines.push(`┃ 🏷️ *Version:* v${version}`);
-    lines.push('┃');
-    lines.push(`┃ 🏓 *Ping:* ${latencyMs >= 0 ? latencyMs.toFixed(2) : 'N/A'} ms`);
-    lines.push(`┃ ⏱️ *Uptime:* ${days}d ${hours}h ${mins}m ${secs}s`);
-    lines.push(`┃ 💾 *RAM:* ${rssMB.toFixed(1)} MB`);
-    lines.push(`┃ 📦 *Heap:* ${heapUsedMB.toFixed(1)} / ${heapTotalMB.toFixed(1)} MB`);
-    lines.push(`┃ 🧮 *Load(1m):* ${load1}   | *CPU:* ${cpuCount}`);
-    lines.push(`┃ 🖥️ *Platform:* ${platform}`);
-    lines.push(`┃ ⚙️ *CPU Model:* ${cpuModel}`);
-    lines.push('┃');
-    lines.push('┃ ✨ _Stay awesome — Infinity MD_ ✨');
-    lines.push('┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛');
+    const caption = box(lines);
 
-    const caption = lines.join('\n');
-
-    // Prefer to use the same banner as the menu (bot_image.jpg) if available
     try {
       const imgPath = pickRandomAsset();
       if (imgPath && fs.existsSync(imgPath)) {
-        await sock.sendMessage(chatId, { image: fs.readFileSync(imgPath), caption }, { quoted: message });
+        await sock.sendMessage(
+          chatId,
+          { image: fs.readFileSync(imgPath), caption },
+          { quoted: message }
+        );
       } else {
         await sock.sendMessage(chatId, { text: caption }, { quoted: message });
       }
-    } catch (e) {
+    } catch {
       await sock.sendMessage(chatId, { text: caption }, { quoted: message });
     }
   }
 };
+      `━━━━━━━━━━━━━━━━━━━━`,
