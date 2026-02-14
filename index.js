@@ -201,6 +201,8 @@ server.listen(PORT, () => {
 });
 
 let _startingQasim = false;
+let _restartAttempts = 0;
+const MAX_RESTART_ATTEMPTS = 6;
 async function startQasimDev() {
     try {
         if (_startingQasim) {
@@ -528,6 +530,9 @@ async function startQasimDev() {
                 
                 if (statusCode === DisconnectReason.loggedOut || statusCode === 401) {
                     try {
+                        // backup session before removing
+                        const backupDir = `./session.bak.${Date.now()}`;
+                        try { require('fs').renameSync('./session', backupDir); printLog('info', `Backed up session to ${backupDir}`); } catch(e) { /* ignore */ }
                         rmSync('./session', { recursive: true, force: true });
                         printLog('warning', 'Session logged out. Session cleared. Please re-authenticate');
                         return;
@@ -547,6 +552,11 @@ async function startQasimDev() {
                     printLog('connection', `Reconnecting in ${waitTime / 1000} seconds...`);
                     await delay(waitTime);
                     _startingQasim = false;
+                    _restartAttempts++;
+                    if (_restartAttempts > MAX_RESTART_ATTEMPTS) {
+                        printLog('error', `Exceeded max restart attempts (${MAX_RESTART_ATTEMPTS}). Exiting to allow external process manager to restart.`);
+                        process.exit(1);
+                    }
                     startQasimDev();
                 }
             }
@@ -569,6 +579,8 @@ async function startQasimDev() {
         });
 
         _startingQasim = false;
+        _restartAttempts = 0;
+        global.QasimDev = QasimDev;
         return QasimDev;
     } catch (error) {
         printLog('error', `Error in startQasimDev: ${error.message}`);
@@ -578,6 +590,11 @@ async function startQasimDev() {
             rl = null;
         }
         _startingQasim = false;
+        _restartAttempts++;
+        if (_restartAttempts > MAX_RESTART_ATTEMPTS) {
+            printLog('error', `startQasimDev failed repeatedly (${_restartAttempts}). Exiting.`);
+            process.exit(1);
+        }
         await delay(5000);
         startQasimDev();
     }
@@ -684,6 +701,26 @@ process.on('unhandledRejection', (err) => {
     printLog('error', `Unhandled Rejection: ${err.message}`);
     console.error(err.stack);
 });
+
+// Graceful shutdown
+async function gracefulShutdown(signal) {
+    printLog('info', `Received ${signal}. Shutting down gracefully...`);
+    try {
+        if (global.QasimDev && global.QasimDev.ev) {
+            try { global.QasimDev.ev.removeAllListeners(); } catch (e) {}
+            try { if (global.QasimDev.end) await global.QasimDev.end(); } catch (e) {}
+        }
+        await delay(500);
+        printLog('info', 'Shutdown complete.');
+        process.exit(0);
+    } catch (e) {
+        printLog('error', `Error during shutdown: ${e.message}`);
+        process.exit(1);
+    }
+}
+
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
 
 server.on('error', (error) => {
     if (error.code === 'EADDRINUSE') {
