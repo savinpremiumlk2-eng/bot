@@ -180,7 +180,7 @@
       <h1>🔗 Multi-Device Dashboard</h1>
       <p>Link your WhatsApp account and manage multiple devices</p>
     </div>
-    
+
     <div class="content">
       <div class="tabs">
         <button class="tab-btn active" onclick="switchTab('pair')">Link Device</button>
@@ -192,7 +192,7 @@
         <div class="option-box">
           <h3>📱 Scan QR Code</h3>
           <p>Use WhatsApp on your phone to scan and link this device</p>
-          <button onclick="generateQR()">Generate QR Code</button>
+          <button id="gen-qr-btn">Generate QR Code</button>
           <div id="qr-result"></div>
         </div>
 
@@ -200,8 +200,8 @@
           <h3>📞 Pair with Phone Number</h3>
           <p>Get a pairing code for your phone number</p>
           <div class="input-group">
-            <input type="tel" id="phone-input" placeholder="Enter phone number (e.g., 923051391007)" />
-            <button onclick="generatePairingCode()">Generate Code</button>
+            <input type="tel" id="phone-input" placeholder="Enter phone number (e.g., 94770612011)" />
+            <button id="gen-code-btn">Generate Code</button>
           </div>
           <div id="code-result"></div>
         </div>
@@ -223,45 +223,37 @@
       // Show selected tab
       document.getElementById(tabName).classList.add('active');
       event.target.classList.add('active');
-      
-      if (tabName === 'devices') {
-        loadDevices();
-      }
+
+      if (tabName === 'devices') loadDevices();
     }
+    // --- New handlers using /api/multidevice endpoints ---
+    let currentPolling = null;
 
     async function generateQR() {
       const resultDiv = document.getElementById('qr-result');
       resultDiv.innerHTML = '<div class="loading"></div> Generating QR code...';
 
       try {
-        const response = await fetch('/api/pair/qr');
+        const response = await fetch('/api/multidevice/qr');
         const data = await response.json();
 
-        if (data.error) {
-          resultDiv.innerHTML = `<div class="error">❌ ${data.error}</div>`;
-          return;
-        }
+        if (data.error) return resultDiv.innerHTML = `<div class="error">❌ ${data.error}</div>`;
 
+        const id = data.id || data.deviceId || '';
         let html = `
           <div class="qr-container">
-            <p><strong>Device ID:</strong> ${data.deviceId}</p>
+            <p><strong>Device ID:</strong> ${id}</p>
             <img src="${data.qr}" alt="QR Code" />
             <div>
-              <p style="color: #666; font-size: 0.9rem;">Follow these steps:</p>
-              <ol style="text-align: left; display: inline-block;">
-        `;
-        
-        data.instructions.forEach(step => {
-          html += `<li style="margin: 5px 0;">${step}</li>`;
-        });
-        
-        html += `
-              </ol>
+              <p style="color: #666; font-size: 0.9rem;">Open WhatsApp → Linked Devices → Link a device and scan the QR</p>
             </div>
           </div>
         `;
-        
+
         resultDiv.innerHTML = html;
+
+        // start polling devices to detect when this id becomes paired
+        if (id) pollDeviceStatus(id, resultDiv);
       } catch (err) {
         resultDiv.innerHTML = `<div class="error">❌ ${err.message}</div>`;
       }
@@ -271,42 +263,29 @@
       const phone = document.getElementById('phone-input').value.trim();
       const resultDiv = document.getElementById('code-result');
 
-      if (!phone) {
-        resultDiv.innerHTML = '<div class="error">❌ Please enter a phone number</div>';
-        return;
-      }
+      if (!phone) return resultDiv.innerHTML = '<div class="error">❌ Please enter a phone number</div>';
 
       resultDiv.innerHTML = '<div class="loading"></div> Generating pairing code...';
 
       try {
-        const response = await fetch('/api/pair/number', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ number: phone })
+        const response = await fetch('/api/multidevice/number', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ number: phone })
         });
         const data = await response.json();
+        if (data.error) return resultDiv.innerHTML = `<div class="error">❌ ${data.error}</div>`;
 
-        if (data.error) {
-          resultDiv.innerHTML = `<div class="error">❌ ${data.error}</div>`;
-          return;
-        }
-
+        const id = data.id || data.deviceId || '';
         let html = `
           <div class="success">✅ Pairing code generated!</div>
-          <p><strong>Device ID:</strong> ${data.deviceId}</p>
-          <p>Your pairing code (valid for 5 minutes):</p>
-          <div class="code-display">${data.code}</div>
-          <p style="color: #666; font-size: 0.9rem; margin-top: 15px;">Follow these steps:</p>
-          <ol style="text-align: left; display: inline-block;">
+          <p><strong>Device ID:</strong> ${id}</p>
+          <p>Your pairing code (valid briefly):</p>
+          <div class="code-display">${data.code || data.pairingCode || ''}</div>
+          <p style="color: #666; font-size: 0.9rem; margin-top: 15px;">Open WhatsApp → Linked Devices → Link a device → Link with phone number</p>
         `;
-        
-        data.instructions.forEach(step => {
-          html += `<li style="margin: 5px 0;">${step}</li>`;
-        });
-        
-        html += `</ol>`;
-        
+
         resultDiv.innerHTML = html;
+
+        if (id) pollDeviceStatus(id, resultDiv);
       } catch (err) {
         resultDiv.innerHTML = `<div class="error">❌ ${err.message}</div>`;
       }
@@ -317,27 +296,27 @@
       listDiv.innerHTML = '<div class="loading"></div> Loading devices...';
 
       try {
-        const response = await fetch('/api/pair/devices');
+        const response = await fetch('/api/multidevice/devices');
         const data = await response.json();
+        const devices = data.devices || [];
 
-        if (data.devices.length === 0) {
-          listDiv.innerHTML = '<p style="color: #666;">No devices linked yet. Go to "Link Device" to add one.</p>';
-          return;
-        }
+        if (devices.length === 0) return listDiv.innerHTML = '<p style="color: #666;">No devices linked yet. Go to "Link Device" to add one.</p>';
 
-        let html = `<p style="margin-bottom: 20px;"><strong>${data.total} device(s) linked</strong></p>`;
-        
-        data.devices.forEach(device => {
+        let html = `<p style="margin-bottom: 20px;"><strong>${devices.length} device(s) linked</strong></p>`;
+        devices.forEach(device => {
+          const id = device.id || device.deviceId || '';
+          const phone = device.phone || device.phoneNumber || '';
+          const status = (device.status || 'unknown').toUpperCase();
           html += `
             <div class="device-item">
               <div class="device-info">
-                <div class="phone">📱 ${device.phoneNumber}</div>
-                <p>Device ID: ${device.deviceId}</p>
-                <p>Linked: ${new Date(device.createdAt).toLocaleDateString()}</p>
+                <div class="phone">📱 ${phone || '—'}</div>
+                <p>Device ID: ${id}</p>
+                <p>Linked: ${new Date(device.createdAt || device.createdAt || Date.now()).toLocaleString()}</p>
               </div>
               <div>
-                <span class="status-badge">${device.status.toUpperCase()}</span>
-                <button onclick="removeDevice('${device.deviceId}')" style="margin-left: 10px; background: #f44336;">Remove</button>
+                <span class="status-badge">${status}</span>
+                <button onclick="removeDevice('${id}')" style="margin-left: 10px; background: #f44336;">Remove</button>
               </div>
             </div>
           `;
@@ -351,14 +330,38 @@
 
     async function removeDevice(deviceId) {
       if (!confirm('Remove this device?')) return;
-
       try {
-        await fetch(`/api/pair/devices/${deviceId}`, { method: 'DELETE' });
+        await fetch(`/api/multidevice/devices/${deviceId}`, { method: 'DELETE' });
         loadDevices();
-      } catch (err) {
-        alert(`Error: ${err.message}`);
-      }
+      } catch (err) { alert(`Error: ${err.message}`); }
     }
+
+    // Poll devices endpoint to detect status changes for given id
+    function pollDeviceStatus(id, resultDiv) {
+      if (currentPolling) clearInterval(currentPolling);
+      currentPolling = setInterval(async () => {
+        try {
+          const r = await fetch('/api/multidevice/devices');
+          const j = await r.json();
+          const found = (j.devices || []).find(d => (d.id||d.deviceId) === id);
+          if (found && (found.status === 'paired' || found.status === 'paired')) {
+            resultDiv.innerHTML += `<div class="success" style="margin-top:12px">✅ Device paired successfully!</div>`;
+            clearInterval(currentPolling);
+            currentPolling = null;
+            loadDevices();
+          }
+        } catch (e) {
+          // ignore polling errors
+        }
+      }, 2000);
+    }
+
+    // wire up buttons
+    document.getElementById('gen-qr-btn').addEventListener('click', generateQR);
+    document.getElementById('gen-code-btn').addEventListener('click', generatePairingCode);
+
+    // initial devices load
+    loadDevices();
   </script>
 </body>
 </html>
