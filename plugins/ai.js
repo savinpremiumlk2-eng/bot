@@ -1,3 +1,61 @@
+const { Groq } = require('groq-sdk');
+
+module.exports = {
+  command: 'ai',
+  aliases: ['ask','gpt','chat'],
+  category: 'ai',
+  description: 'Ask the AI (requires AI_API_KEY in env)',
+  usage: '.ai <prompt>',
+
+  async handler(sock, message, args, context = {}) {
+    const chatId = context.chatId || message.key.remoteJid;
+    const prompt = args.join(' ').trim() || (message.message?.conversation || '').trim();
+
+    if (!prompt) {
+      return await sock.sendMessage(chatId, { text: 'Usage: .ai <prompt>' }, { quoted: message });
+    }
+
+    const apiKey = process.env.AI_API_KEY;
+    if (!apiKey) {
+      return await sock.sendMessage(chatId, { text: 'AI API key not configured. Set environment variable `AI_API_KEY`.' }, { quoted: message });
+    }
+
+    let groq;
+    try {
+      groq = new Groq({ apiKey });
+    } catch (e) {
+      console.error('Failed to construct Groq client:', e.message || e);
+      return await sock.sendMessage(chatId, { text: 'AI client initialization failed.' }, { quoted: message });
+    }
+
+    try {
+      await sock.sendMessage(chatId, { text: '🤖 Generating response — please wait...' }, { quoted: message });
+
+      const chatCompletion = await groq.chat.completions.create({
+        messages: [ { role: 'user', content: prompt } ],
+        model: 'openai/gpt-oss-120b',
+        temperature: 1,
+        max_completion_tokens: 1024,
+        top_p: 1,
+        stream: true,
+        reasoning_effort: 'medium'
+      });
+
+      let content = '';
+      for await (const chunk of chatCompletion) {
+        const delta = chunk.choices?.[0]?.delta?.content || '';
+        content += delta;
+      }
+
+      if (!content || content.trim().length === 0) content = '[No response]';
+
+      await sock.sendMessage(chatId, { text: content.trim() }, { quoted: message });
+    } catch (err) {
+      console.error('AI plugin error:', err && err.message ? err.message : err);
+      await sock.sendMessage(chatId, { text: `AI request failed: ${err && err.message ? err.message : 'unknown'}` }, { quoted: message });
+    }
+  }
+};
 /*****************************************************************************
  *                                                                           *
  *                     Developed By Qasim Ali                                *
