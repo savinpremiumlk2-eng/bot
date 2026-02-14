@@ -293,6 +293,16 @@ module.exports = {
       }
 
       if (!audioBuffer) {
+        // Try alternative plugin before failing
+        try {
+          const alt = require('./song_alt');
+          console.log('[Song] Trying alternative song handler (song_alt)');
+          await alt.handler(sock, message, args, context);
+          return;
+        } catch (altErr) {
+          console.error('[Song] Alternative handler failed:', altErr && altErr.message);
+        }
+
         return await sock.sendMessage(chatId, {
           text: '❌ *Download failed!*\n\nAll APIs are currently unavailable. Please try again in a moment.'
         }, { quoted: message });
